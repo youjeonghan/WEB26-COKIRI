@@ -25,8 +25,8 @@ const version = 'v1';
 
 async function run<R>(requestConfig: AxiosRequestConfig): Promise<ReturnType<R>> {
   const url = `${baseURL}/${version}/${requestConfig.url}`;
-  const result = await axios.request({ ...requestConfig, url });
-  return result.data;
+  const result = await axios.request<R>({ ...requestConfig, url });
+  return result.data!;
 }
 
 function getAuthHeader({
@@ -47,6 +47,7 @@ function get<R>(config: AxiosRequestConfig): Promise<ReturnType<R>> {
   return run({ ...config, method: 'GET' });
 }
 
+// eslint-disable-next-line no-unused-vars
 function post<R>(config: AxiosRequestConfig): Promise<ReturnType<R>> {
   return run({ ...config, method: 'POST' });
 }
@@ -55,6 +56,7 @@ function put<R>(config: AxiosRequestConfig): Promise<ReturnType<R>> {
   return run({ ...config, method: 'PUT' });
 }
 
+// eslint-disable-next-line no-unused-vars
 function del<R>(config: AxiosRequestConfig): Promise<ReturnType<R>> {
   return run({ ...config, method: 'DELETE' });
 }
@@ -99,12 +101,12 @@ const Fetcher = {
   // for server side
   async getUsersMe(token: string) {
     const result = await getWithAuth<UserType>({ url: 'users/me', token });
-    return result.data;
+    return result.data!;
   },
 
   async getUsersByUsername(token: string, username: string) {
     const result = await getWithAuth<UserType>({ url: 'users', token, params: { username } });
-    return result.data;
+    return result.data!;
   },
 
   // for client side
@@ -124,7 +126,7 @@ const Fetcher = {
       url: `posts/${postID}/likes`,
       token: user.token!,
     });
-    return result.data;
+    return result.data!;
   },
 
   getUserPosts(user: UserType, { pageParam }: QueryFunctionContext) {
@@ -136,12 +138,12 @@ const Fetcher = {
 
   async getSearch(query: string) {
     const result = await get<UserType[]>({ url: 'search', params: { query } });
-    return result.data;
+    return result.data!;
   },
 
   async getIsExistUsername(username: string) {
     const result = await get<boolean>({ url: 'users', params: { query: username } });
-    return result.data;
+    return result.data!;
   },
 
   async getUserSuggestions(user: UserType) {
@@ -152,7 +154,7 @@ const Fetcher = {
       url: `users/${user._id}/suggestions`,
       token: user.token!,
     });
-    return result.data;
+    return result.data!;
   },
 
   getRandomPosts({ pageParam }: QueryFunctionContext) {
@@ -161,7 +163,7 @@ const Fetcher = {
 
   async getDetailPost(postID: string) {
     const result = await get<PostType>({ url: `posts/${postID}` });
-    return result.data;
+    return result.data!;
   },
 
   async getUserRepos(user: UserType) {
@@ -169,7 +171,7 @@ const Fetcher = {
       url: `users/${user._id}/repositories`,
       token: user.token!,
     });
-    return result.data;
+    return result.data!;
   },
 
   async getUserRepo(user: UserType, repoName: string) {
@@ -177,27 +179,27 @@ const Fetcher = {
       url: `users/${user._id}/repositories/${repoName}`,
       token: user.token!,
     });
-    return result.data;
+    return result.data!;
   },
 
   async getUserFollows(targetUserID: string) {
     const result = await get<UserType[]>({ url: `users/${targetUserID}/follows` });
-    return result.data;
+    return result.data!;
   },
 
   async getUserFollowers(targetUserID: string) {
     const result = await get<UserType[]>({ url: `users/${targetUserID}/followers` });
-    return result.data;
+    return result.data!;
   },
 
   async getProblems(query: string) {
     const result = await get<ProblemType[]>({ url: 'problems', params: { query } });
-    return result.data;
+    return result.data!;
   },
 
   async getProblem(id: string) {
     const result = await get<ExternalType>({ url: `problems/${id}` });
-    return result.data;
+    return result.data!;
   },
 
   async getUserBlogs(user: UserType) {
@@ -205,7 +207,7 @@ const Fetcher = {
       url: `users/${user._id}/blogs`,
       token: user.token!,
     });
-    return result.data;
+    return result.data!;
   },
 
   async getUserBlog(user: UserType, identity: string, postID: string) {
@@ -213,14 +215,14 @@ const Fetcher = {
       url: `users/${user._id}/tistory/${identity}/posts/${postID}`,
       token: user.token!,
     });
-    return result.data;
+    return result.data!;
   },
 
   async getDashboardUserInfo(username: string) {
     const result = await get<DashboardUserInfoType>({
       url: `users/dashboard?username=${username}`,
     });
-    return result.data;
+    return result.data!;
   },
 
   async getTistoryAuthURL(user: UserType, redirectURI: string) {
@@ -229,24 +231,24 @@ const Fetcher = {
       token: user.token!,
       params: { redirect_uri: redirectURI },
     });
-    return result.data;
+    return result.data!;
   },
 
   async getDashboardRepo(userID: string) {
     const result = await get<RepoType[]>({ url: `users/${userID}/dashboard/repositories` });
-    return result.data;
+    return result.data!;
   },
 
   async getDashboardLanguageStatistics(userID: string) {
     const result = await get<StatisticsType>({
       url: `users/${userID}/dashboard/repositories/languages`,
     });
-    return result.data;
+    return result.data!;
   },
 
   async getTechStacksSearch(query: string) {
     const result = await get<StackType[]>({ url: `techStacks/search?query=${query}` });
-    return result.data;
+    return result.data!;
   },
 
   async postPost(user: UserType, content: string, images: string[], external?: ExternalType) {
@@ -255,7 +257,7 @@ const Fetcher = {
       data: { userID: user._id, content, images, external },
       token: user.token!,
     });
-    return result.data;
+    return result.data!;
   },
 
   async getUserNotifications(user: UserType) {
@@ -263,7 +265,7 @@ const Fetcher = {
       url: `users/${user._id}/notifies`,
       token: user.token!,
     });
-    return result.data;
+    return result.data!;
   },
 
   async postPostLike(user: UserType, postID: string) {
@@ -272,7 +274,7 @@ const Fetcher = {
       data: { userID: user._id },
       token: user.token!,
     });
-    return result.data;
+    return result.data!;
   },
 
   async postPostComment(user: UserType, postID: string, content: string) {
@@ -281,7 +283,7 @@ const Fetcher = {
       data: { userID: user._id, content },
       token: user.token!,
     });
-    return result.data;
+    return result.data!;
   },
 
   async postCommentLike(user: UserType, postID: string, commentID: string) {
@@ -290,7 +292,7 @@ const Fetcher = {
       data: { userID: user._id },
       token: user.token!,
     });
-    return result.data;
+    return result.data!;
   },
 
   async postDashboardHistory(user: UserType, content: string, date: string) {
@@ -299,7 +301,7 @@ const Fetcher = {
       data: { content, date },
       token: user.token!,
     });
-    return result.data;
+    return result.data!;
   },
 
   async postDashboardRepo(user: UserType, repoName: string) {
@@ -308,7 +310,7 @@ const Fetcher = {
       data: { userID: user._id },
       token: user.token!,
     });
-    return result.data;
+    return result.data!;
   },
 
   async postUserFollow(user: UserType, targetUserID: string) {
@@ -351,7 +353,7 @@ const Fetcher = {
       },
       token: user.token!,
     });
-    return result.data;
+    return result.data!;
   },
 
   async putDashboardRepoLanguages(user: UserType) {
@@ -359,14 +361,14 @@ const Fetcher = {
       url: `users/${user._id}/dashboard/repositories/languages`,
       token: user.token!,
     });
-    return result.data;
+    return result.data!;
   },
 
   async putSolvedacStatistics(userID: string, solvedUsername: string) {
     const result = await put<StatisticsType>({
       url: `users/${userID}/problems/${solvedUsername}/statistics`,
     });
-    return result.data;
+    return result.data!;
   },
 
   async deletePostLike(user: UserType, postID: string, likeID: string) {

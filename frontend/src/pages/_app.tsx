@@ -54,7 +54,7 @@ MyApp.getInitialProps = async (context: AppContext) => {
   const props: { user?: UserType; dashboardUserInfo?: DashboardUserInfoType } = {};
   if (lastPath === 'dashboard') {
     const username = context.router.query.username as string;
-    const { data } = await Fetcher.getDashboardUserInfo(username);
+    const data = await Fetcher.getDashboardUserInfo(username);
     props.dashboardUserInfo = data;
   }
   const token = context.ctx.req?.headers.cookie?.split('=')[1];
